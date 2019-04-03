@@ -15,13 +15,44 @@
   * dimensions (These represent the character's size in the video game)
   * destroy() // prototype method that returns: `${this.name} was removed from the game.`
 */
-
+function GameObject (obj)
+{
+  this.createdAt = obj.createdAt;
+  this.myName = obj.name;
+  this.demensions = obj.demensions;
+  "use strict";
+  
+  this.destroy = function ()
+  {
+    return `\n ${this.myName} has Been Slain!`
+  }
+  return this;
+}
 /*
   === CharacterStats ===
   * healthPoints
   * takeDamage() // prototype method -> returns the string '<object name> took damage.'
   * should inherit destroy() from GameObject's prototype
 */
+CharacterStats.prototype = Object.create(GameObject);
+function CharacterStats(obj)
+{
+  GameObject.call(this, obj);
+  this.healthPoints = obj.healthPoints;
+  
+  this.takeDamage = function(dam)
+  {
+    this.healthPoints -= dam;
+    return `Hit: ${Math.floor(dam*100)/100} pts` + (this.healthPoints <= 0 ? this.destroy() : "");
+  }
+  this.destroy = function() 
+  {
+    this.takeDamage = function(dam){return `${this.myName} is dead. Don't beat a dead horse.`}
+    return `\n ${this.myName} has Been Slain!`;
+  }
+  return this;
+}
+
 
 /*
   === Humanoid (Having an appearance or character resembling that of a human.) ===
@@ -40,6 +71,82 @@
 */
 
 // Test you work by un-commenting these 3 objects and the list of console logs below:
+
+Humanoid.prototype = Object.create(CharacterStats);
+function Humanoid(obj)
+{
+  CharacterStats.call(this, obj);
+  this.team = obj.team;
+  this.weapons = obj.weapons;
+  this.language = obj.language;
+  this.greet = function()
+  {
+    return `${this.myName} offers a greeting in ${this.language}.`
+  };
+  this.attack = function(weaponslot, victum)
+  {
+    if(victum.name !== "CharacterStats") { return `${this.myName} didnt know who to attack?`}; 
+    //if(typeof this.weapons !== "array") return `${this.myName} has no weapon! ${this.weapons}`; //weapon undefined
+    let wep = this.weapons[weaponslot < this.weapons.length ? weaponslot : 0]
+    if(!wep) return `${this.name} has no weapon! ${wep}`; //weapon undefined
+    if(wep.damage.length < 2) return  `${this.myName}'s '${wep.name}' is damaged. ${wep.damage.length}`;
+    return `${this.myName} uses ${wep.name} on ${victum.myName}! \n ${victum.takeDamage(parseFloat((Math.random()*wep.damage[1]) + wep.damage[0]))}`;
+  };
+  this.destroy = function()
+  {
+    this.attack = function(){return `${this.myName} is dead and cannot attack.`};
+    return `\n ${this.myName} has Been Slain!`;//couldnt call the parent function
+  }
+  return this;
+}
+
+
+
+var HomelessMan = new Humanoid({
+  createdAt : "10",
+  name : "Vilage Idiot",
+  demensions : {width: 1, height: 2, depht:3},
+  healthPoints : 100,
+  team : "Evil",
+  weapons : [{name : "Some Bath Salts", damage : [3,100]}],
+  language : "Bat-Shit Crazy"
+});
+
+var GrandpaMoses = new Humanoid({
+  createdAt : "10",
+  name : "GrampaMoses",
+  demensions : {width: 1, height: 2, depht:3},
+  healthPoints : 50,
+  team : "Good",
+  weapons : [{name : "Old Boring Stoy", damage : [0,3]}],
+  language : "Grampa"
+});
+
+console.log(HomelessMan.destroy());
+
+console.log(HomelessMan.greet());
+console.log(GrandpaMoses.greet());
+console.log(GrandpaMoses.attack(60, HomelessMan));
+console.log(HomelessMan.attack(60, GrandpaMoses));
+console.log(GrandpaMoses.attack(60, HomelessMan));
+console.log(HomelessMan.attack(60, GrandpaMoses));
+console.log(GrandpaMoses.attack(60, HomelessMan));
+console.log(HomelessMan.attack(60, GrandpaMoses));
+console.log(GrandpaMoses.attack(60, HomelessMan));
+console.log(HomelessMan.attack(60, GrandpaMoses));
+console.log(GrandpaMoses.attack(60, HomelessMan));
+console.log(HomelessMan.attack(60, GrandpaMoses));
+console.log(GrandpaMoses.attack(60, HomelessMan));
+console.log(HomelessMan.attack(60, GrandpaMoses));
+console.log(GrandpaMoses.attack(60, HomelessMan));
+console.log(HomelessMan.attack(60, GrandpaMoses));
+console.log(GrandpaMoses.attack(60, HomelessMan));
+console.log(HomelessMan.attack(60, GrandpaMoses));
+console.log(GrandpaMoses.attack(60, HomelessMan));
+console.log(HomelessMan.attack(60, GrandpaMoses));
+console.log(GrandpaMoses.attack(60, HomelessMan));
+console.log(HomelessMan.attack(60, GrandpaMoses));
+
 
 /*
   const mage = new Humanoid({
@@ -108,3 +215,4 @@
   // * Create Villain and Hero constructor functions that inherit from the Humanoid constructor function.  
   // * Give the Hero and Villains different methods that could be used to remove health points from objects which could result in destruction if health gets to 0 or drops below 0;
   // * Create two new objects, one a villain and one a hero and fight it out with methods!
+  console.log("hell\toh")
