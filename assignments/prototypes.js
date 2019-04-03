@@ -79,7 +79,7 @@ function Humanoid(obj)
   this.language = obj.language;
   this.greet = function()
   {
-    return `${this.myName} offers a greeting in ${this.language}.`
+    return `<div class="greeting">${this.myName} offers a greeting in ${this.language}.</div>`
   };
   this.attack = function(weaponslot, victum)
   {
@@ -88,12 +88,15 @@ function Humanoid(obj)
     let wep = this.weapons[weaponslot < this.weapons.length ? weaponslot : 0]
     if(!wep) return `${this.name} has no weapon! ${wep}`; //weapon undefined
     if(wep.damage.length < 2) return  `${this.myName}'s '${wep.name}' is damaged. ${wep.damage.length}`;
-    return `${this.myName} uses ${wep.name} on ${victum.myName}! \n ${victum.takeDamage(parseFloat((Math.random()*wep.damage[1]) + wep.damage[0]))}`;
+    return `<div>${this.myName} uses ${wep.name} on ${victum.myName}!</div><div>${victum.takeDamage(parseFloat((Math.random()*wep.damage[1]) + wep.damage[0]))}</div>`;
   };
   this.destroy = function()
   {
-    this.attack = function(){return `${this.myName} is dead and cannot attack.`};
-    return `\n ${this.myName} has Been Slain!`;//couldnt call the parent function
+    this.greet = function(){return `${this.myName} is dead! Deadmen tell not tales.`}
+    this.takeDamage = function(dam){return `${this.myName} is dead. Don't beat a dead horse.`; this.healthPoints=0;}
+    this.attack = function(){return `${this.myName} is dead and cannot attack.`;};
+    this.healthPoints=0;
+    return `<div>${this.myName} has Been Slain!</div>`;//couldnt call the parent function
   }
   return this;
 }
@@ -106,47 +109,63 @@ var HomelessMan = new Humanoid({
   demensions : {width: 1, height: 2, depht:3},
   healthPoints : 100,
   team : "Evil",
-  weapons : [{name : "Some Bath Salts", damage : [3,100]}],
+  weapons : [{name : "Some Bath Salts", damage : [0,7]}, {name : "Old Box", damage : [1,6]},{name : "Shopping Cart", damage : [0,5]}],
   language : "Bat-Shit Crazy"
 });
 
 var GrandpaMoses = new Humanoid({
   createdAt : "10",
-  name : "GrampaMoses",
+  name : "Grandpa Moses",
   demensions : {width: 1, height: 2, depht:3},
-  healthPoints : 50,
+  healthPoints : 75,
   team : "Good",
-  weapons : [{name : "Old Boring Stoy", damage : [0,3]}],
+  weapons : [{name : "Old Boring Stoy", damage : [0,13]}, {name : "Cane", damage : [5,8]},{name : "False Teeth", damage : [0,20]}],
   language : "Grampa"
 });
 
 
-console.log(HomelessMan.greet());
-console.log(GrandpaMoses.greet());
-console.log(GrandpaMoses.attack(60, HomelessMan));
-console.log(HomelessMan.attack(60, GrandpaMoses));
-console.log(GrandpaMoses.attack(60, HomelessMan));
-console.log(HomelessMan.attack(60, GrandpaMoses));
-console.log(GrandpaMoses.attack(60, HomelessMan));
-console.log(HomelessMan.attack(60, GrandpaMoses));
-console.log(GrandpaMoses.attack(60, HomelessMan));
-console.log(HomelessMan.attack(60, GrandpaMoses));
-console.log(GrandpaMoses.attack(60, HomelessMan));
-console.log(HomelessMan.attack(60, GrandpaMoses));
-console.log(GrandpaMoses.attack(60, HomelessMan));
-console.log(HomelessMan.attack(60, GrandpaMoses));
-console.log(GrandpaMoses.attack(60, HomelessMan));
-console.log(HomelessMan.attack(60, GrandpaMoses));
-console.log(GrandpaMoses.attack(60, HomelessMan));
-console.log(HomelessMan.attack(60, GrandpaMoses));
-console.log(GrandpaMoses.attack(60, HomelessMan));
-console.log(HomelessMan.attack(60, GrandpaMoses));
-console.log(GrandpaMoses.attack(60, HomelessMan));
-console.log(HomelessMan.attack(60, GrandpaMoses));
+
+function start(){
+  document.write('<link rel="stylesheet" href="index.css"></link>');
+  document.write(`<div class=head-container><h1>${HomelessMan.myName}</h1><h1>${GrandpaMoses.myName}</h1> </div>`)
+  document.write(`<div class="greeting-container">${HomelessMan.greet()}  ${GrandpaMoses.greet()}</div>
+  <div class="stats">
+  <div class="stat-item"><p>Health: ${HomelessMan.healthPoints}</p><p>Health: ${GrandpaMoses.healthPoints}</p></div>
+  <div class="stat-item"><p>Team: ${HomelessMan.team}</p><p>Team: ${GrandpaMoses.team}</p></div>
+  </div> 
+  `);
+  function remove(name)
+  {
+    let a = document.getElementsByClassName(name);
+    for(let j = 0; j < a.length; j++)
+    {
+      a[j].style.display = "none";
+    }
+  }
+  function move() 
+  {
+    remove('Move-container');
+    document.write(`
+    <div class='Move-container'>
+    <div class="stats">
+    <div class="stat-item"><p>Health: ${Math.floor(HomelessMan.healthPoints*100)/100}</p><p>Health: ${Math.floor(GrandpaMoses.healthPoints*100)/100}</p></div>
+    <div class="stat-item"><p>Team: ${HomelessMan.team}</p><p>Team: ${GrandpaMoses.team}</p></div>
+    </div> 
+    <div class="horizontal-line"></div>
+    <div class="attack-container"><div class="attack">${HomelessMan.attack(Math.floor(Math.random()*HomelessMan.weapons.length),GrandpaMoses)}</div> <div class="attack">${GrandpaMoses.attack(Math.floor(Math.random()*GrandpaMoses.weapons.length),HomelessMan)}</div></div>
+    </div>
+    
+    </div>`);
+    setTimeout(move, 2000);
+  }
+  setTimeout(move, 2000);
+  setTimeout(remove, 1999, 'greeting-container');
+  setTimeout(remove, 1999, 'stats');
+}
 
 
 
-  const mage = new Humanoid({
+  /* const mage = new Humanoid({
     createdAt: new Date(),
     dimensions: {
       length: 2,
@@ -203,7 +222,7 @@ console.log(HomelessMan.attack(60, GrandpaMoses));
   console.log(archer.greet()); // Lilith offers a greeting in Elvish.
   console.log(mage.takeDamage(1)); // Bruce took damage.
   console.log(swordsman.destroy()); // Sir Mustachio was removed from the game.
-
+ */
   // Stretch task: 
   // * Create Villain and Hero constructor functions that inherit from the Humanoid constructor function.  
   // * Give the Hero and Villains different methods that could be used to remove health points from objects which could result in destruction if health gets to 0 or drops below 0;
