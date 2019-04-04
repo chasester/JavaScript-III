@@ -109,7 +109,7 @@ var HomelessMan = new Humanoid({
   demensions : {width: 1, height: 2, depht:3},
   healthPoints : 100,
   team : "Evil",
-  weapons : [{name : "Some Bath Salts", damage : [0,7]}, {name : "Old Box", damage : [1,6]},{name : "Shopping Cart", damage : [0,5]}],
+  weapons : [{name : "Some Bath Salts", damage : [0,7]}, {name : "Old Box", damage : [3,6]},{name : "Shopping Cart", damage : [0,10]}],
   language : "Bat-Shit Crazy"
 });
 
@@ -119,7 +119,7 @@ var GrandpaMoses = new Humanoid({
   demensions : {width: 1, height: 2, depht:3},
   healthPoints : 75,
   team : "Good",
-  weapons : [{name : "Old Boring Stoy", damage : [0,13]}, {name : "Cane", damage : [5,8]},{name : "False Teeth", damage : [0,20]}],
+  weapons : [{name : "Old Boring Stoy", damage : [0,10]}, {name : "Cane", damage : [3,8]},{name : "False Teeth", damage : [0,15]}],
   language : "Grampa"
 });
 
