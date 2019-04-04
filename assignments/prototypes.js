@@ -139,7 +139,7 @@ function start(){
     let a = document.getElementsByClassName(name);
     for(let j = 0; j < a.length; j++)
     {
-      a[j].style.display = "none";
+      a[j].parentNode.removeChild(a[j]);
     }
   }
   function move() 
